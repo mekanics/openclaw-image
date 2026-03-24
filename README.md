@@ -4,23 +4,13 @@ Custom OpenClaw Docker image — thin layer on top of the official `ghcr.io/open
 
 ## What's added
 
-| Package | Why |
-|---|---|
-| `ffmpeg` | Video frame extraction (video-frames skill) |
-| `jq` | JSON processing in scripts |
-| `git` | Lazy clone for project repos |
-| `curl` | HTTP requests from scripts |
-| `ca-certificates` | TLS for outbound connections |
-
-## How it works
-
-```
-ghcr.io/openclaw/openclaw:slim     ← official upstream
-        ↓
-ghcr.io/mekanics/openclaw-image    ← this image (+ffmpeg +jq +git +curl)
-        ↓
-homelab k3s deployment             ← consumed via Helm chart
-```
+| Package           | Why                                         |
+| ----------------- | ------------------------------------------- |
+| `ffmpeg`          | Video frame extraction (video-frames skill) |
+| `jq`              | JSON processing in scripts                  |
+| `git`             | Lazy clone for project repos                |
+| `curl`            | HTTP requests from scripts                  |
+| `ca-certificates` | TLS for outbound connections                |
 
 ## Automation
 
