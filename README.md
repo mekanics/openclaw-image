@@ -4,13 +4,16 @@ Custom OpenClaw Docker image — thin layer on top of the official `ghcr.io/open
 
 ## What's added
 
-| Package           | Why                                         |
-| ----------------- | ------------------------------------------- |
-| `ffmpeg`          | Video frame extraction (video-frames skill) |
-| `jq`              | JSON processing in scripts                  |
-| `git`             | Lazy clone for project repos                |
-| `curl`            | HTTP requests from scripts                  |
-| `ca-certificates` | TLS for outbound connections                |
+| Package           | Why                                          |
+| ----------------- | -------------------------------------------- |
+| `ffmpeg`          | Video frame extraction (video-frames skill)  |
+| `jq`              | JSON processing in scripts                   |
+| `git`             | Lazy clone for project repos                 |
+| `curl`            | HTTP requests from scripts                   |
+| `ca-certificates` | TLS for outbound connections                 |
+| `gh`              | GitHub CLI — PR-based workflow for agents     |
+| `playwright`      | Browser automation (Chromium)                |
+| `uv`              | Fast Python package/project manager          |
 
 ## Automation
 
@@ -20,7 +23,7 @@ Custom OpenClaw Docker image — thin layer on top of the official `ghcr.io/open
 
 ## Adding tools
 
-Edit the `Dockerfile`, push to `main`. GitHub Actions rebuilds automatically.
+Edit the `Dockerfile`, open a PR. GitHub Actions rebuilds on merge to `main`.
 
 ## Local build
 
