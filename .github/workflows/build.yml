@@ -23,6 +23,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Extract upstream OpenClaw version
+        id: upstream
+        run: |
+          # Parse the upstream version from the FROM line, e.g. 2026.3.24
+          VERSION=$(grep -m1 '^FROM ghcr.io/openclaw/openclaw:' Dockerfile | sed 's|FROM ghcr.io/openclaw/openclaw:||')
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v4
 
@@ -45,7 +52,7 @@ jobs:
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=sha,prefix=
-            type=raw,value={{date 'YYYYMMDD'}},enable={{is_default_branch}}
+            type=raw,value=${{ steps.upstream.outputs.version }}-1,enable={{is_default_branch}}
 
       - name: Build and push
         uses: docker/build-push-action@v7
