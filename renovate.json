@@ -6,7 +6,8 @@
       "matchDatasources": ["docker"],
       "matchPackageNames": ["ghcr.io/openclaw/openclaw"],
       "automerge": false,
-      "pinDigests": true
+      "pinDigests": true,
+      "versioning": "docker"
     }
   ]
 }
