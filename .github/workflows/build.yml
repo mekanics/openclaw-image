@@ -26,8 +26,11 @@ jobs:
       - name: Extract upstream OpenClaw version
         id: upstream
         run: |
-          # Parse the upstream version from the FROM line, e.g. 2026.3.24
-          VERSION=$(grep -m1 '^FROM ghcr.io/openclaw/openclaw:' Dockerfile | sed 's|FROM ghcr.io/openclaw/openclaw:||')
+          # Parse the upstream version from the FROM line, e.g. 2026.3.24-slim
+          # Strip the digest (e.g. @sha256:...) if present so the tag stays clean
+          VERSION=$(grep -m1 '^FROM ghcr.io/openclaw/openclaw:' Dockerfile \
+            | sed 's|FROM ghcr.io/openclaw/openclaw:||' \
+            | sed 's|@sha256:.*||')
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Set up QEMU
