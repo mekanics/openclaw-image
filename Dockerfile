@@ -12,6 +12,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     ca-certificates \
+    build-essential \
+    pkg-config \
+    libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install GitHub CLI (gh)
@@ -38,5 +41,13 @@ ENV PLAYWRIGHT_BROWSERS_PATH=/home/node/.cache/ms-playwright
 # https://docs.astral.sh/uv/
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 ENV UV_LINK_MODE=copy
+
+# Install Rust toolchain (rustc + cargo) via multi-stage copy
+# Supports multi-arch (amd64 + arm64) without curl at build time
+COPY --from=rust:1-slim-bookworm /usr/local/cargo /usr/local/cargo
+COPY --from=rust:1-slim-bookworm /usr/local/rustup /usr/local/rustup
+ENV RUSTUP_HOME=/usr/local/rustup \
+    CARGO_HOME=/usr/local/cargo \
+    PATH=/usr/local/cargo/bin:$PATH
 
 USER node
