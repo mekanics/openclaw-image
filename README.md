@@ -14,6 +14,7 @@ Custom OpenClaw Docker image — thin layer on top of the official `ghcr.io/open
 | `gh`              | GitHub CLI — PR-based workflow for agents     |
 | `playwright`      | Browser automation (Chromium)                |
 | `uv`              | Fast Python package/project manager          |
+| `rust`            | Write, build and test Rust applications      |
 
 ## Automation
 
