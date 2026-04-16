@@ -2,7 +2,7 @@
 # Adds system tools needed by skills and agents.
 #
 # renovate datasource=docker depName=ghcr.io/openclaw/openclaw
-FROM ghcr.io/openclaw/openclaw:2026.4.14-slim@sha256:252324a1caeedd69ca7c289f9878595cdf320cfd44c96ac45d66b4f0d7775ab4
+FROM ghcr.io/openclaw/openclaw:2026.4.15-slim@sha256:18e3d1bdd714e436c11eba954a212411c77378dde32efdedfee2d62c5cdcd4eb
 
 USER root
 
