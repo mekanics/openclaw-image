@@ -2,15 +2,19 @@ name: Build and Push
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
   # Allow manual trigger
   workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -52,10 +56,16 @@ jobs:
         uses: docker/metadata-action@v6
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          # Tag scheme:
+          #   latest                            -> floating, default branch
+          #   <upstream>                        -> floating, latest build on this upstream (e.g. 2026.4.15-slim)
+          #   <upstream>-<run_number>           -> immutable, pin this in production (e.g. 2026.4.15-slim-42)
+          #   <short-sha>                       -> immutable, pinned to source commit
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ steps.upstream.outputs.version }},enable={{is_default_branch}}
+            type=raw,value=${{ steps.upstream.outputs.version }}-${{ github.run_number }},enable={{is_default_branch}}
             type=sha,prefix=
-            type=raw,value=${{ steps.upstream.outputs.version }}-1,enable={{is_default_branch}}
 
       - name: Build and push
         uses: docker/build-push-action@v7

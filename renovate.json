@@ -1,13 +1,16 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
-  "packageRules": [
-    {
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["ghcr.io/openclaw/openclaw"],
-      "automerge": false,
-      "pinDigests": true,
-      "versioning": "docker"
-    }
-  ]
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": ["config:recommended"],
+	"packageRules": [
+		{
+			"matchDatasources": ["docker"],
+			"matchPackageNames": ["ghcr.io/openclaw/openclaw"],
+			"versioning": "regex:^(?<major>\\d{4})\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?:-(?<build>\\d+))?-(?<compatibility>slim)$",
+			"minimumReleaseAge": "2 days",
+			"automerge": true,
+			"automergeType": "pr",
+			"automergeStrategy": "squash",
+			"pinDigests": true
+		}
+	]
 }
