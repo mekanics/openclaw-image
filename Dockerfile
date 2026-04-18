@@ -6,37 +6,45 @@ FROM ghcr.io/openclaw/openclaw:2026.4.15-slim@sha256:18e3d1bdd714e436c11eba954a2
 
 USER root
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ffmpeg \
-    jq \
-    git \
-    curl \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install GitHub CLI (gh)
-# https://github.com/cli/cli/blob/trunk/docs/install_linux.md
-RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-      | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
-      | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
-    apt-get update && apt-get install -y --no-install-recommends gh && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install Playwright + Chromium for browser automation
-# The official slim image only includes this with OPENCLAW_INSTALL_BROWSER=1
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-get install -y --no-install-recommends xvfb && \
-    mkdir -p /home/node/.cache/ms-playwright && \
-    PLAYWRIGHT_BROWSERS_PATH=/home/node/.cache/ms-playwright \
-    node /app/node_modules/playwright-core/cli.js install --with-deps chromium && \
-    chown -R node:node /home/node/.cache/ms-playwright && \
-    rm -rf /var/lib/apt/lists/*
 ENV PLAYWRIGHT_BROWSERS_PATH=/home/node/.cache/ms-playwright
 
-# Install uv — fast Python package/project manager (replaces pip + venv)
+# All system tooling in a single layer:
+#   - ffmpeg, jq, git: required by skills/agents
+#   - gh: GitHub CLI (added via official apt repo)
+#   - xvfb + Playwright Chromium: browser automation (the slim base
+#     image only ships these when OPENCLAW_INSTALL_BROWSER=1)
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        gnupg; \
+    \
+    curl -fsSL --proto '=https' --tlsv1.2 \
+        https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+        -o /usr/share/keyrings/githubcli-archive-keyring.gpg; \
+    chmod a+r /usr/share/keyrings/githubcli-archive-keyring.gpg; \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+        > /etc/apt/sources.list.d/github-cli.list; \
+    \
+    apt-get update; \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        ffmpeg \
+        gh \
+        git \
+        jq \
+        xvfb; \
+    \
+    install -d -o node -g node "$PLAYWRIGHT_BROWSERS_PATH"; \
+    node /app/node_modules/playwright-core/cli.js install --with-deps chromium; \
+    chown -R node:node "$PLAYWRIGHT_BROWSERS_PATH"; \
+    \
+    rm -rf /var/lib/apt/lists/*
+
+# Install uv — fast Python package/project manager
 # https://docs.astral.sh/uv/
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+# renovate datasource=docker depName=ghcr.io/astral-sh/uv
+COPY --from=ghcr.io/astral-sh/uv:0.11.7@sha256:240fb85ab0f263ef12f492d8476aa3a2e4e1e333f7d67fbdd923d00a506a516a /uv /usr/local/bin/uv
 ENV UV_LINK_MODE=copy
 
 USER node
