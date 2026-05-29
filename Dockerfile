@@ -44,7 +44,7 @@ RUN set -eux; \
 # Install uv — fast Python package/project manager
 # https://docs.astral.sh/uv/
 # renovate datasource=docker depName=ghcr.io/astral-sh/uv
-COPY --from=ghcr.io/astral-sh/uv:0.11.14@sha256:1025398289b62de8269e70c45b91ffa37c373f38118d7da036fb8bb8efc85d97 /uv /usr/local/bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.11.17@sha256:03bdc89bb9798628846e60c3a9ad19006c8c3c724ccd2985a33145c039a0577b /uv /usr/local/bin/uv
 ENV UV_LINK_MODE=copy
 
 USER node
