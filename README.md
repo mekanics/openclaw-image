@@ -12,6 +12,7 @@ Custom OpenClaw Docker image — thin layer on top of the official `ghcr.io/open
 | `curl`            | HTTP requests from scripts                  |
 | `ca-certificates` | TLS for outbound connections                |
 | `gh`              | GitHub CLI — PR-based workflow for agents   |
+| `vim`             | Interactive config edits (`vi` / `vim`)     |
 | `playwright`      | Browser automation (Chromium)               |
 | `uv`              | Fast Python package/project manager         |
 

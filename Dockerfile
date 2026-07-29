@@ -10,6 +10,7 @@ ENV PLAYWRIGHT_BROWSERS_PATH=/home/node/.cache/ms-playwright
 
 # All system tooling in a single layer:
 #   - ffmpeg, jq, git: required by skills/agents
+#   - vim: provides the vi editor for interactive edits
 #   - gh: GitHub CLI (added via official apt repo)
 #   - xvfb + Playwright Chromium: browser automation (the slim base
 #     image only ships these when OPENCLAW_INSTALL_BROWSER=1)
@@ -33,6 +34,7 @@ RUN set -eux; \
         gh \
         git \
         jq \
+        vim \
         xvfb; \
     \
     install -d -o node -g node "$PLAYWRIGHT_BROWSERS_PATH"; \
