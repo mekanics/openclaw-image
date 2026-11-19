@@ -45,9 +45,11 @@ RUN set -eux; \
     # homelab chart runs the pod as uid 1024 to match the all-squash NFS
     # export, so that uid must be able to traverse /home/node to reach the
     # volumes mounted at /home/node/.openclaw and /home/node/.openclaw-state.
-    # 0711 grants execute only: no listing, contents keep their own modes.
-    chmod 711 /home/node; \
-    test "$(stat -c %a /home/node)" = 711; \
+    # Execute alone is not enough: doctor opens /home/node itself for read
+    # (open() gives EACCES at 0711), so use 0755 like the pre-2026.11.5
+    # images. Contents keep their own modes.
+    chmod 755 /home/node; \
+    test "$(stat -c %a /home/node)" = 755; \
     \
     rm -rf /var/lib/apt/lists/*
 
