@@ -41,6 +41,14 @@ RUN set -eux; \
     node /app/node_modules/playwright-core/cli.js install --with-deps chromium; \
     chown -R node:node "$PLAYWRIGHT_BROWSERS_PATH"; \
     \
+    # The base image ships /home/node as 0700 (owner node, uid 1000). The
+    # homelab chart runs the pod as uid 1024 to match the all-squash NFS
+    # export, so that uid must be able to traverse /home/node to reach the
+    # volumes mounted at /home/node/.openclaw and /home/node/.openclaw-state.
+    # 0711 grants execute only: no listing, contents keep their own modes.
+    chmod 711 /home/node; \
+    test "$(stat -c %a /home/node)" = 711; \
+    \
     rm -rf /var/lib/apt/lists/*
 
 # Install uv — fast Python package/project manager
